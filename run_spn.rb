@@ -2,6 +2,8 @@ $:.unshift(File.dirname(__FILE__))
 require 'pry'
 require 'spn/spn'
 require 'spn/key_schedule'
+require 'spn/table_vals'
+require 'terminal-table'
 
 # This is proving example 3.1 in the textbook
 pi_s_3_1 = {
@@ -47,3 +49,6 @@ plaintext_3_1 = %w(0010 0110 1011 0111)
 
 key_schedule_3_1 = Spn::KeySchedule.build(k_3_1, plaintext_3_1.size)
 spn_results_3_1 = Spn::Spn.run(plaintext_3_1, pi_s_3_1, pi_p_3_1, key_schedule_3_1)
+
+table_vals = Spn::TableVals.new(spn_results_3_1[:u], spn_results_3_1[:v])
+table_vals.run
