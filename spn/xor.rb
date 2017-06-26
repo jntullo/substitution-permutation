@@ -26,5 +26,14 @@ module Spn
       end
       new_vals
     end
+
+    def self.xor_multiply(ab, uv)
+      ab_dup = ab.split('')
+      uv_dup = uv.split('')
+      mult = ab_dup.size.times.collect do |i|
+        ab_dup[i].to_i * uv_dup[i].to_i
+      end
+      four_vals(*mult)
+    end
   end
 end

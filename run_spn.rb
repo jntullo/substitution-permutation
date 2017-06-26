@@ -3,7 +3,7 @@ require 'pry'
 require 'spn/spn'
 require 'spn/key_schedule'
 require 'spn/table_vals'
-require 'terminal-table'
+
 
 # This is proving example 3.1 in the textbook
 pi_s_3_1 = {

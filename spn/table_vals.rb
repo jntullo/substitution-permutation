@@ -1,5 +1,5 @@
 require 'xor'
-require 'terminal-table'
+
 module Spn
   class TableVals
 
@@ -13,13 +13,12 @@ module Spn
       @flat_v = v.flatten
       @indexes = {}
       @sorted_u = []
-      @sorted_v = Array.new(v.size)
-      find_u_indexes
+      @sorted_v = Array.new(16)
       sort_u
       sort_v
       @u1_u4_v2 = u1_u4_v2
       @u3_u4_v1_v4 = u3_u4_v1_v4
-      binding.pry
+      @nl_vals = create_empty_nl_vals
     end
 
     def run
@@ -28,15 +27,18 @@ module Spn
 
 
     def calculate_table_values
-      table = []
       16.times do |a|
-        row = []
-        a_binary = ("%04b" % a).split('')
+        binary_a = "%04b" % a
         16.times do |b|
-          b_binary = ("%04b" % b).split('')
-          4.times do |i|
-
+          count = 0
+          binary_b = "%04b" % b
+          @sorted_u.size.times do |index|
+            u = @sorted_u[index]
+            v = @sorted_v[index]
+            result = Xor.xor_multiply(binary_a, u) ^ Xor.xor_multiply(binary_b, v)
+            count = count + 1 if result.zero?
           end
+          @nl_vals[a][b] = count
         end
       end
     end
@@ -67,24 +69,35 @@ module Spn
     end
 
     def sort_u
-      size = flat_u.size - 1
-      size.times do |i|
+      16.times do |i|
         @sorted_u << "%04b" % i
       end
     end
 
     def sort_v
-      indexes.each do |index, value|
-        @sorted_v[index] = flat_v[value]
+      16.times do |i|
+        binary_i = "%04b" % i
+        puts i
+        # find where it is in flat_u, get index
+        # place that value in sorted_v
+        index = flat_u.index(binary_i)
+        if i == 11
+          @sorted_v[i] = '1100'
+          next
+        elsif i == 15
+          @sorted_v[i] = '0111'
+          next
+        end
+        @sorted_v[i] = flat_v[index]
       end
-      @sorted_v[11] = '0111'
     end
 
-    def find_u_indexes
-      flat_u.each_with_index do |binary_val, index|
-        @indexes[binary_val.to_i(2)] = index
+    private
+
+    def create_empty_nl_vals
+      16.times.collect do |i|
+        Array.new(16)
       end
-      @indexes = indexes.sort_by { |k,v| k }.to_h
     end
   end
 end
