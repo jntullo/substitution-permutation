@@ -9,7 +9,6 @@ module Spn
       w = []
       u = []
       v = []
-
       puts "w^0 = #{plaintext}"
 
       substitution = Substitution.new(pi_s)

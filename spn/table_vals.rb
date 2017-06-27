@@ -41,6 +41,15 @@ module Spn
           @nl_vals[a][b] = count
         end
       end
+      pretty_print_nl_vals
+    end
+
+    def pretty_print_nl_vals
+      headers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F']
+      puts "#{headers}"
+      @nl_vals.each_with_index do |val, index|
+        puts "#{index.to_s(16)} #{val}"
+      end
     end
 
     def u1_u4_v2
@@ -75,17 +84,15 @@ module Spn
     end
 
     def sort_v
+      diff_vals = flat_u - flat_v
       16.times do |i|
         binary_i = "%04b" % i
-        puts i
         # find where it is in flat_u, get index
         # place that value in sorted_v
         index = flat_u.index(binary_i)
-        if i == 11
-          @sorted_v[i] = '1100'
-          next
-        elsif i == 15
-          @sorted_v[i] = '0111'
+        if index.nil?
+          @sorted_v[i] = diff_vals.first
+          diff_vals = diff_vals - Array(diff_vals.first) unless diff_vals.count == 1
           next
         end
         @sorted_v[i] = flat_v[index]
